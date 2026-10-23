@@ -32,25 +32,17 @@ jobs:
       - name: Install Linux dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y git zip unzip \
-            autoconf automake libtool pkg-config \
-            zlib1g-dev libncurses-dev libffi-dev \
-            libssl-dev cmake libltdl-dev
+          sudo apt-get install -y git zip unzip autoconf automake libtool pkg-config zlib1g-dev libncurses-dev libffi-dev libssl-dev cmake libltdl-dev
 
       - name: Set up Android SDK
-       uses: android-actions/setup-android@v4
+        uses: android-actions/setup-android@v4
+
       - name: Install Android SDK packages
         run: |
-          sdkmanager --install \
-            "platform-tools" \
-            "platforms;android-33" \
-            "build-tools;33.0.2" \
-            "ndk;25.1.8937393" \
-            "cmake;3.22.1"
+          sdkmanager --install "platform-tools" "platforms;android-33" "build-tools;33.0.2" "ndk;25.1.8937393" "cmake;3.22.1"
           yes | sdkmanager --licenses
           mkdir -p "$ANDROID_HOME/tools/bin"
-          ln -sf "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" \
-            "$ANDROID_HOME/tools/bin/sdkmanager"
+          ln -sf "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "$ANDROID_HOME/tools/bin/sdkmanager"
 
       - name: Install Buildozer
         run: |
@@ -73,3 +65,4 @@ jobs:
           path: bin/*.apk
           if-no-files-found: error
           retention-days: 14
+          
