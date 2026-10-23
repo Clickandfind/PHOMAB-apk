@@ -1,3 +1,4 @@
+
 name: Build PHOMAB APK
 
 on:
@@ -12,26 +13,34 @@ jobs:
   build:
     runs-on: ubuntu-22.04
     timeout-minutes: 90
+
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: Install Linux build dependencies
+      - name: Install Linux dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y git zip unzip openjdk-17-jdk \
-            autoconf automake libtool pkg-config zlib1g-dev \
-            libncurses-dev libffi-dev libssl-dev cmake libltdl-dev
+          sudo apt-get install -y git zip unzip \
+            autoconf automake libtool pkg-config \
+            zlib1g-dev libncurses-dev libffi-dev \
+            libssl-dev cmake libltdl-dev
 
-      - name: Set up Android SDK command-line tools
+      - name: Set up Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Install Android SDK packages and licenses
+      - name: Install Android SDK packages
         run: |
           sdkmanager --install \
             "platform-tools" \
@@ -40,25 +49,25 @@ jobs:
             "ndk;25.1.8937393" \
             "cmake;3.22.1"
           yes | sdkmanager --licenses
-          # Compatibility for Buildozer versions that still look under tools/bin.
           mkdir -p "$ANDROID_HOME/tools/bin"
-          ln -sf "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "$ANDROID_HOME/tools/bin/sdkmanager"
+          ln -sf "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" \
+            "$ANDROID_HOME/tools/bin/sdkmanager"
 
       - name: Install Buildozer
         run: |
           python -m pip install --upgrade pip setuptools wheel
           python -m pip install "Cython==0.29.36" "buildozer==1.5.0"
 
-      - name: Verify PHOMAB source files
+      - name: Check PHOMAB files
         run: |
           test -f main.py
           test -f buildozer.spec
           python -m py_compile main.py
 
-      - name: Build debug APK
+      - name: Build PHOMAB APK
         run: buildozer -v android debug
 
-      - name: Upload APK artifact
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: PHOMAB-APK
