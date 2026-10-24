@@ -1,0 +1,25 @@
+
+workflows:
+  phomab-android:
+    name: PHOMAB Android APK
+    max_build_duration: 120
+    instance_type: linux
+
+    environment:
+      vars:
+        PACKAGE_NAME: "org.clickandfind.phomab"
+      python: 3.11
+
+    scripts:
+      - name: Install build tools
+        script: |
+          pip install --upgrade pip
+          pip install buildozer cython
+
+      - name: Build PHOMAB APK
+        script: |
+          buildozer android debug
+
+    artifacts:
+      - bin/*.apk
+      
