@@ -11,7 +11,7 @@ fullscreen = 0
 
 # Android settings
 android.api = 33
-android.minapi = 23
+android.minapi = 24
 android.ndk = 25b
 android.sdk_path = /usr/local/lib/android/sdk
 android.ndk_path = /usr/local/lib/android/sdk/ndk/25.1.8937393
